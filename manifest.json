@@ -1,0 +1,26 @@
+{
+  "name": "More Typos Please",
+  "manifest_version": 2,
+  "version": "1.0",
+
+  "description": "Reduce your typing performance by increasing the number of typos in your text.",
+
+  "icons": {
+        "16": "img/icon-16.png",
+        "48": "img/icon-48.png",
+        "128": "img/icon-128.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["http://*/*",
+                  "https://*/*"],
+      "js": [
+        "js/libs/jquery-2.1.1.min.js",
+        "js/contentscript.js"
+      ],
+
+      "run_at": "document_end"
+    }
+  ]
+}
