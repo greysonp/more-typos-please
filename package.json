@@ -1,0 +1,14 @@
+{
+  "title": "More Typos Please",
+  "name": "more-typos-please",
+  "version": "0.0.0",
+  "description": "Reduce your typing performance by increasing the number of typos in your text.",
+  "main": "firefox.js",
+  "author": "Greyson Parrelli",
+  "icon": "resource://more-typos-please/data/img/icon-48.png",
+  "engines": {
+    "firefox": ">=38.0a1",
+    "fennec": ">=38.0a1"
+  },
+  "license": "MIT"
+}

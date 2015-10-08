@@ -65,13 +65,10 @@
 
     var _wpm = 0;
     var _numKeystrokes = 0;
-    var _skipNextKey = false;
 
 
     function init() {
-        console.log('document ready');
         window.addEventListener('keypress', onLetterTyped, true);
-
         startPollingLoop();
     }
 
@@ -96,7 +93,7 @@
         }
 
         // Ignore events from elements we don't care about
-        $element = $(e.srcElement);
+        $element = $(e.target);
         if (!isValidSrcElement($element)) {
             return;
         }
@@ -110,7 +107,7 @@
             var probabilityOfTypo = percentToMax * MAX_PROBABILITY;
 
             if (Math.random() <= probabilityOfTypo) {
-                createTypo($element, e.keyCode);
+                createTypo($element, e.keyCode || e.which);
                 e.preventDefault();
                 return false;
             }
