@@ -2,7 +2,7 @@
     $(document).ready(init);
 
     var WPM_THRESHOLD = 70;
-    var MAX_PROBABILITY = .1;
+    var MAX_PROBABILITY = .12;
     var WPM_FOR_MAX_PROBABILITY = 150;
 
     var POLLING_INTERVAL_MS = 200;
@@ -115,24 +115,13 @@
     }
 
     function createTypo($input, keyCode) {
-        var val = isDiv($input) ? $input.text() : $input.val();
-        if (val.length < 2) {
-            return;
-        }
-
         var typedChar = String.fromCharCode(keyCode);
 
         // If the character is in our adjacency map, have a 50% chance that we'll replace it with an
         // adjacent letter
         if (ADJACENCY_MAP[typedChar]) {
             if (Math.random() > .5) {
-                var newVal = val + chooseRandomFromArray(ADJACENCY_MAP[typedChar]);
-                if (isDiv($input)) {
-                    $input.text(newVal);
-                    moveCursorToEnd($input);
-                } else {
-                    $input.val(newVal);
-                }
+                insertAtCursor($input, chooseRandomFromArray(ADJACENCY_MAP[typedChar]))
             }
         }
         // Note: The other 50% of the time, we'll just skip a letter, since the caller of this function
@@ -167,13 +156,48 @@
         return array[index];
     }
 
-    function moveCursorToEnd($div) {
-        var range = document.createRange(); //Create a range (a range is a like the selection but invisible)
-        range.selectNodeContents($div[0]);  //Select the entire contents of the element with the range
-        range.collapse(false);              //collapse the range to the end point. false means collapse to end rather than the start
-        selection = window.getSelection();  //get the selection object (allows you to change selection)
-        selection.removeAllRanges();        //remove any selections already made
-        selection.addRange(range);          //make the range you have just created the visible selection
+    function insertAtCursor($element, text) {
+        if (isDiv($element)) {
+            insertBeforeAndAfterCursor(text, '');
+        } else {
+            var txtarea = $element[0];
+            var scrollPos = txtarea.scrollTop;
+            var caretPos = txtarea.selectionStart;
+
+            var front = (txtarea.value).substring(0, caretPos);
+            var back = (txtarea.value).substring(txtarea.selectionEnd, txtarea.value.length);
+            txtarea.value = front + text + back;
+            caretPos = caretPos + text.length;
+            txtarea.selectionStart = caretPos;
+            txtarea.selectionEnd = caretPos;
+            txtarea.focus();
+            txtarea.scrollTop = scrollPos;
+        }
+    }
+
+    function insertBeforeAndAfterCursor(textBefore, textAfter) {
+        if (window.getSelection) {
+            var sel = window.getSelection();
+            if (sel.rangeCount > 0) {
+                var range = sel.getRangeAt(0);
+                var startNode = range.startContainer, startOffset = range.startOffset;
+
+                var startTextNode = document.createTextNode(textBefore);
+                var endTextNode = document.createTextNode(textAfter);
+
+                var boundaryRange = range.cloneRange();
+                boundaryRange.collapse(false);
+                boundaryRange.insertNode(endTextNode);
+                boundaryRange.setStart(startNode, startOffset);
+                boundaryRange.collapse(true);
+                boundaryRange.insertNode(startTextNode);
+
+                // Reselect the original text
+                range.setStartAfter(startTextNode);
+                range.setEndBefore(endTextNode);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
+        }
     }
 })();
-
