@@ -1,14 +1,14 @@
 ﻿(function() {
     $(document).ready(init);
 
-    var WPM_THRESHOLD = 70;
-    var MAX_PROBABILITY = .12;
-    var WPM_FOR_MAX_PROBABILITY = 150;
+    var WPM_THRESHOLD = 60;
+    var MAX_PROBABILITY = .50;
+    var WPM_FOR_MAX_PROBABILITY = 130;
 
     var POLLING_INTERVAL_MS = 200;
     var POLLING_INTERVAL_MIN = POLLING_INTERVAL_MS / 1000 / 60;
 
-    var SMOOTHING_DURATION_MS = 1000;
+    var SMOOTHING_DURATION_MS = 750;
     var ALPHA = SMOOTHING_DURATION_MS / (SMOOTHING_DURATION_MS + POLLING_INTERVAL_MS);
 
     var INVALID_KEYCODES = [
@@ -34,7 +34,7 @@
         'p': ['['],
         'a': ['s'],
         's': ['d'],
-        'd': ['f'], 
+        'd': ['f'],
         'f': ['g'],
         'g': ['f'],
         'h': ['j'],
@@ -76,7 +76,7 @@
         setInterval(function() {
             var numWords = _numKeystrokes / 5;
             var wpm = numWords / POLLING_INTERVAL_MIN;
-            
+
             // _wpm is a moving average
             _wpm = ALPHA * _wpm + (1 - ALPHA) * wpm;
 
