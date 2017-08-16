@@ -2,7 +2,7 @@
     $(document).ready(init);
 
     var WPM_THRESHOLD = 60;
-    var MAX_PROBABILITY = .50;
+    var MAX_PROBABILITY = 0.05;
     var WPM_FOR_MAX_PROBABILITY = 130;
 
     var POLLING_INTERVAL_MS = 200;
